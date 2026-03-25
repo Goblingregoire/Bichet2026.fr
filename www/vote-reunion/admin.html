@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Classement de Projets</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, #d39f27, #0a2f4f);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logout-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+        
+        .rankings-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .table-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+        }
+        
+        .table-content {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .ranking-item {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem;
+        }
+        
+        .ranking-item:last-child {
+            border-bottom: none;
+        }
+        
+        .ranking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .ranking-name {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .ranking-date {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .ranking-projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .project-rank-item {
+            background: #f8fafc;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .rank-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+        }
+        
+        .admin-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+        
+        .project-stats {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .project-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .project-name-bar {
+            min-width: 200px;
+            font-weight: 600;
+        }
+        
+        .project-progress {
+            flex: 1;
+            background: #e5e7eb;
+            border-radius: 4px;
+            height: 24px;
+            margin: 0 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-fill {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            height: 100%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 0.5rem;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .project-score {
+            min-width: 50px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+        
+        .btn-info {
+            background: #0ea5e9;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: #0284c7;
+            transform: translateY(-2px);
+        }
+        
+        .unauthorized {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin: 2rem auto;
+            max-width: 500px;
+        }
+        
+        .unauthorized h2 {
+            color: #dc2626;
+            margin-bottom: 1rem;
+        }
+        
+        .unauthorized p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <div id="appContent">
+        <!-- Le contenu sera inséré ici après vérification de l'authentification -->
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Vérification de l'authentification
+        function checkAuthentication() {
+            const authToken = sessionStorage.getItem('adminAuthToken');
+            const loginTime = sessionStorage.getItem('adminLoginTime');
+            
+            if (!authToken || authToken !== 'authenticated') {
+                showUnauthorized();
+                return false;
+            }
+            
+            // Vérifier si la session n'est pas expirée (24 heures)
+            if (loginTime && (Date.now() - parseInt(loginTime)) > 24 * 60 * 60 * 1000) {
+                sessionStorage.removeItem('adminAuthToken');
+                sessionStorage.removeItem('adminLoginTime');
+                showUnauthorized();
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Affichage de la page non autorisée
+        function showUnauthorized() {
+            document.getElementById('appContent').innerHTML = `
+                <div class="unauthorized">
+                    <h2>🔒 Accès non autorisé</h2>
+                    <p>Vous devez être connecté pour accéder au panneau d'administration.</p>
+                    <a href="login.html" class="btn btn-primary">Se connecter</a>
+                </div>
+            `;
+        }
+
+        // Affichage du contenu admin
+        function showAdminContent() {
+            document.getElementById('appContent').innerHTML = `
+                <div class="admin-container">
+                    <header class="admin-header">
+                        <a href="#" onclick="logout()" class="logout-btn">🚪 Déconnexion</a>
+                        <h1>🔐 Panneau d'Administration</h1>
+                        <p>Gestion des classements de priorité des projets</p>
+                    </header>
+
+                    <div class="admin-actions">
+                        <button class="btn btn-primary" onclick="refreshData()">🔄 Actualiser</button>
+                        <button class="btn btn-secondary" onclick="exportAllRankings()">📥 Exporter tout</button>
+                        <button class="btn btn-secondary" onclick="exportReadableReport()">📄 Exporter rapport lisible</button>
+                        <button class="btn btn-warning" onclick="importTextFiles()">📁 Importer sauvegardes</button>
+                        <button class="btn btn-warning" onclick="resetUserSubmissions()">🔓 Réinitialiser soumissions</button>
+                        <button class="btn btn-info" onclick="showSubmissionManager()">👥 Gérer les soumissions</button>
+                        <button class="btn btn-danger" onclick="clearAllData()">🗑️ Effacer tout</button>
+                        <button class="btn btn-secondary" onclick="window.location.href='index.html'">🏠 Retour au formulaire</button>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalSubmissions">0</div>
+                            <div class="stat-label">Total des soumissions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="todaySubmissions">0</div>
+                            <div class="stat-label">Soumissions aujourd'hui</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="avgProjects">0</div>
+                            <div class="stat-label">Projets moy. par soumission</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="latestSubmission">-</div>
+                            <div class="stat-label">Dernière soumission</div>
+                        </div>
+                    </div>
+
+                    <div class="project-stats">
+                        <h3>📊 Analyse des priorités globales</h3>
+                        <div id="projectAnalysis"></div>
+                    </div>
+
+                    <div class="rankings-table">
+                        <div class="table-header">
+                            📋 Historique des classements
+                        </div>
+                        <div class="table-content" id="rankingsList">
+                            <div class="no-data">Chargement des données...</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Initialiser les fonctionnalités admin
+            loadAdminData();
+        }
+
+        // Fonction de déconnexion
+        function logout() {
+            sessionStorage.removeItem('adminAuthToken');
+            sessionStorage.removeItem('adminLoginTime');
+            window.location.href = 'login.html';
+        }
+
+        // Réinitialiser les soumissions utilisateur
+        function resetUserSubmissions() {
+            if (confirm('Êtes-vous sûr de vouloir réinitialiser toutes les soumissions utilisateur ?\n\nCela permettra à tout le monde de soumettre à nouveau leur classement.')) {
+                // Supprimer toutes les clés de soumission
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('hasSubmitted_')) {
+                        keysToRemove.push(key);
+                    }
+                }
+                
+                keysToRemove.forEach(key => localStorage.removeItem(key));
+                
+                // Notifier l'admin
+                alert('✅ Les soumissions utilisateur ont été réinitialisées !\n\nTout le monde peut maintenant soumettre à nouveau leur classement.');
+                
+                // Actualiser les données
+                refreshData();
+                
+                // Si la page du formulaire est ouverte dans un autre onglet, la réinitialiser
+                try {
+                    localStorage.setItem('forceReset', Date.now().toString());
+                } catch (e) {
+                    console.log('Impossible de notifier les autres onglets');
+                }
+            }
+        }
+
+        // Gestionnaire de soumissions
+        function showSubmissionManager() {
+            const rankings = viewAllRankings();
+            const submissionKeys = [];
+            
+            // Récupérer toutes les clés de soumission
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('hasSubmitted_')) {
+                    submissionKeys.push(key);
+                }
+            }
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                    <h2 style="color: var(--primary-color); margin-bottom: 1.5rem;">👥 Gestion des soumissions</h2>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <h3 style="color: var(--secondary-color); margin-bottom: 1rem;">📊 Statistiques actuelles</h3>
+                        <p><strong>Total des classements enregistrés :</strong> ${rankings.length}</p>
+                        <p><strong>Sessions de soumission actives :</strong> ${submissionKeys.length}</p>
+                        <p><strong>Capacité de soumissions restantes :</strong> Illimitée (après réinitialisation)</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <h3 style="color: var(--secondary-color); margin-bottom: 1rem;">🔧 Actions disponibles</h3>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <button onclick="resetUserSubmissions(); closeSubmissionManager();" class="btn btn-warning" style="flex: 1; min-width: 200px;">
+                                🔄 Réinitialiser tout
+                            </button>
+                            <button onclick="generateNewFormLink(); closeSubmissionManager();" class="btn btn-info" style="flex: 1; min-width: 200px;">
+                                🔗 Nouveau lien de formulaire
+                            </button>
+                        </div>
+                        <p style="color: #6b7280; font-size: 0.9rem;">
+                            <strong>Réinitialiser tout :</strong> Permet à tous les utilisateurs de soumettre à nouveau<br>
+                            <strong>Nouveau lien :</strong> Génère un lien direct vers le formulaire
+                        </p>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <h3 style="color: var(--secondary-color); margin-bottom: 1rem;">📝 Mode de fonctionnement</h3>
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                            <p style="margin: 0;"><strong>Actuellement :</strong> Chaque utilisateur ne peut soumettre qu'une seule fois par session.</p>
+                            <p style="margin: 0.5rem 0 0 0;"><strong>Solution :</strong> Utilisez "Réinitialiser tout" pour permettre de nouvelles soumissions.</p>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <button onclick="closeSubmissionManager()" class="btn btn-secondary">Fermer</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            window.currentSubmissionManager = modal;
+        }
+
+        function closeSubmissionManager() {
+            if (window.currentSubmissionManager) {
+                document.body.removeChild(window.currentSubmissionManager);
+                window.currentSubmissionManager = null;
+            }
+        }
+
+        function generateNewFormLink() {
+            const currentUrl = window.location.origin + window.location.pathname.replace('admin.html', 'index.html');
+            
+            // Copier le lien dans le presse-papiers
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(currentUrl).then(() => {
+                    alert('🔗 Lien du formulaire copié dans le presse-papiers !\n\n' + currentUrl);
+                }).catch(() => {
+                    prompt('🔗 Voici le lien du formulaire :', currentUrl);
+                });
+            } else {
+                prompt('🔗 Voici le lien du formulaire :', currentUrl);
+            }
+        }
+        function exportReadableReport() {
+            const rankings = viewAllRankings();
+            if (rankings.length === 0) {
+                alert('Aucun classement à exporter');
+                return;
+            }
+
+            // Générer le rapport lisible
+            let report = `RAPPORT DE CLASSEMENT DES PRIORITÉS DE PROJETS\n`;
+            report += `Généré le ${new Date().toLocaleString('fr-FR')}\n`;
+            report += `${'='.repeat(80)}\n\n`;
+
+            // Statistiques générales
+            report += `STATISTIQUES GÉNÉRALES\n`;
+            report += `${'-'.repeat(40)}\n`;
+            report += `Total des soumissions : ${rankings.length}\n`;
+            
+            const today = new Date().toDateString();
+            const todaySubmissions = rankings.filter(r => 
+                new Date(r.timestamp).toDateString() === today
+            ).length;
+            report += `Soumissions aujourd'hui : ${todaySubmissions}\n`;
+            report += `Période d'analyse : ${rankings.length > 0 ? 
+                `${new Date(Math.min(...rankings.map(r => new Date(r.timestamp)))).toLocaleDateString('fr-FR')} - ` +
+                `${new Date(Math.max(...rankings.map(r => new Date(r.timestamp)))).toLocaleDateString('fr-FR')}` : 
+                'N/A'}\n\n`;
+
+            // Analyse des priorités
+            report += `ANALYSE DES PRIORITÉS PAR PROJET\n`;
+            report += `${'-'.repeat(40)}\n`;
+            
+            const projectScores = {};
+            rankings.forEach(ranking => {
+                ranking.ranking.forEach(project => {
+                    if (!projectScores[project.name]) {
+                        projectScores[project.name] = [];
+                    }
+                    projectScores[project.name].push(project.rank);
+                });
+            });
+
+            const projectAverages = Object.entries(projectScores)
+                .map(([name, scores]) => ({
+                    name,
+                    averageScore: scores.reduce((a, b) => a + b, 0) / scores.length,
+                    count: scores.length,
+                    minRank: Math.min(...scores),
+                    maxRank: Math.max(...scores)
+                }))
+                .sort((a, b) => a.averageScore - b.averageScore);
+
+            projectAverages.forEach((project, index) => {
+                report += `${index + 1}. ${project.name}\n`;
+                report += `   Priorité moyenne : ${project.averageScore.toFixed(2)}\n`;
+                report += `   Nombre de votes : ${project.count}\n`;
+                report += `   Fourchette : ${project.minRank} - ${project.maxRank}\n\n`;
+            });
+
+            // Détail des soumissions
+            report += `DÉTAIL DES SOUMISSIONS\n`;
+            report += `${'-'.repeat(40)}\n`;
+            
+            const sortedRankings = rankings.sort((a, b) => 
+                new Date(b.timestamp) - new Date(a.timestamp)
+            );
+
+            sortedRankings.forEach((ranking, index) => {
+                report += `Soumission #${sortedRankings.length - index}\n`;
+                report += `Date : ${new Date(ranking.timestamp).toLocaleString('fr-FR')}\n`;
+                report += `Classement :\n`;
+                
+                ranking.ranking.forEach(project => {
+                    report += `   ${project.rank}. ${project.name}\n`;
+                });
+                report += `\n`;
+            });
+
+            // Création et téléchargement du fichier
+            const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `rapport_classement_${new Date().toISOString().split('T')[0]}.txt`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialisation au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            if (checkAuthentication()) {
+                showAdminContent();
+            }
+        });
+    </script>
+    
+    <!-- Inclure les fonctions admin existantes -->
+    <script>
+        // Fonctions spécifiques à l'administration
+        function loadAdminData() {
+            const rankings = viewAllRankings();
+            updateStatistics(rankings);
+            displayRankings(rankings);
+            analyzeProjectPriorities(rankings);
+            
+            // Vérifier le stockage partagé
+            checkSharedData();
+        }
+
+        // Vérifier les données partagées (GitHub Pages) + Import fichiers texte
+        function checkSharedData() {
+            try {
+                const sharedData = sessionStorage.getItem('sharedRankings');
+                if (sharedData) {
+                    const sharedRankings = JSON.parse(sharedData);
+                    if (sharedRankings.length > 0) {
+                        // Fusionner avec les données locales
+                        const localData = localStorage.getItem('projectRankings');
+                        const localRankings = localData ? JSON.parse(localData) : [];
+                        
+                        let newSubmissions = 0;
+                        sharedRankings.forEach(sharedSubmission => {
+                            const alreadyExists = localRankings.some(r => 
+                                r.timestamp === sharedSubmission.timestamp && 
+                                JSON.stringify(r.ranking) === JSON.stringify(sharedSubmission.ranking)
+                            );
+                            
+                            if (!alreadyExists) {
+                                localRankings.push(sharedSubmission);
+                                newSubmissions++;
+                            }
+                        });
+                        
+                        if (newSubmissions > 0) {
+                            localStorage.setItem('projectRankings', JSON.stringify(localRankings));
+                            
+                            // Afficher une notification
+                            showSyncNotification(newSubmissions);
+                            
+                            // Recharger les données
+                            const rankings = viewAllRankings();
+                            updateStatistics(rankings);
+                            displayRankings(rankings);
+                            analyzeProjectPriorities(rankings);
+                            
+                            // Nettoyer le stockage partagé
+                            sessionStorage.removeItem('sharedRankings');
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log('Erreur lors de la vérification des données partagées:', e);
+            }
+        }
+
+        // Importer des fichiers texte de sauvegarde
+        function importTextFiles() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                    <h2 style="color: var(--primary-color); margin-bottom: 1.5rem;">📁 Importer des sauvegardes</h2>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <h3 style="color: var(--secondary-color); margin-bottom: 1rem;">📄 Importer des fichiers texte</h3>
+                        <p style="margin-bottom: 1rem;">Sélectionnez les fichiers de sauvegarde (.txt) générés lors des soumissions :</p>
+                        <input type="file" id="textFileInput" accept=".txt" multiple style="width: 100%; padding: 0.5rem; border: 2px solid var(--border-color); border-radius: 8px; margin-bottom: 1rem;">
+                        <button onclick="importFromTextFiles()" class="btn btn-primary" style="width: 100%;">📥 Importer les fichiers</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <h3 style="color: var(--secondary-color); margin-bottom: 1rem;">📋 Format des fichiers</h3>
+                        <p style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Les fichiers doivent contenir :</p>
+                        <ul style="font-size: 0.9rem; color: #666; margin-left: 1.5rem;">
+                            <li>📅 Numéro de soumission</li>
+                            <li>🕐 Date et heure</li>
+                            <li>📊 Classement des projets</li>
+                            <li>🎯 Scores et descriptions</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <button onclick="closeTextImportModal()" class="btn btn-secondary">Fermer</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            window.currentTextImportModal = modal;
+        }
+
+        function closeTextImportModal() {
+            if (window.currentTextImportModal) {
+                document.body.removeChild(window.currentTextImportModal);
+                window.currentTextImportModal = null;
+            }
+        }
+
+        function importFromTextFiles() {
+            const fileInput = document.getElementById('textFileInput');
+            const files = fileInput.files;
+            
+            if (files.length === 0) {
+                alert('❌ Veuillez sélectionner au moins un fichier.');
+                return;
+            }
+            
+            let totalImported = 0;
+            const existingData = localStorage.getItem('projectRankings');
+            const rankings = existingData ? JSON.parse(existingData) : [];
+            
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const content = e.target.result;
+                        const submission = parseTextSubmission(content);
+                        
+                        if (submission) {
+                            // Vérifier si déjà importée
+                            const alreadyExists = rankings.some(r => 
+                                r.timestamp === submission.timestamp && 
+                                JSON.stringify(r.ranking) === JSON.stringify(submission.ranking)
+                            );
+                            
+                            if (!alreadyExists) {
+                                rankings.push(submission);
+                                totalImported++;
+                            }
+                        }
+                        
+                        // Si c'est le dernier fichier, mettre à jour
+                        if (totalImported === files.length || totalImported === Array.from(files).length) {
+                            if (totalImported > 0) {
+                                localStorage.setItem('projectRankings', JSON.stringify(rankings));
+                                alert(`✅ ${totalImported} soumission(s) importée(s) avec succès !`);
+                                refreshData();
+                                closeTextImportModal();
+                            } else {
+                                alert('ℹ️ Aucune nouvelle soumission à importer.');
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Erreur lors de la lecture du fichier:', error);
+                    }
+                };
+                reader.readAsText(file);
+            });
+        }
+
+        function parseTextSubmission(content) {
+            try {
+                // Extraire les informations du fichier texte
+                const lines = content.split('\n');
+                let submission = null;
+                let currentProject = null;
+                const projects = [];
+                
+                lines.forEach(line => {
+                    line = line.trim();
+                    
+                    // Extraire la date
+                    if (line.includes('🕐 Date :')) {
+                        const dateStr = line.replace('🕐 Date :', '').trim();
+                        const timestamp = new Date(dateStr).getTime();
+                        if (!isNaN(timestamp)) {
+                            submission = {
+                                timestamp: timestamp,
+                                ranking: projects
+                            };
+                        }
+                    }
+                    
+                    // Extraire les projets
+                    if (/^\d+\.\s+/.test(line)) {
+                        if (currentProject) {
+                            projects.push(currentProject);
+                        }
+                        const projectName = line.replace(/^\d+\.\s+/, '').trim();
+                        currentProject = {
+                            name: projectName,
+                            description: '',
+                            currentRank: projects.length + 1
+                        };
+                    }
+                    
+                    // Extraire les descriptions
+                    if (line.includes('📝') && currentProject) {
+                        currentProject.description = line.replace('📝', '').trim();
+                    }
+                });
+                
+                // Ajouter le dernier projet
+                if (currentProject) {
+                    projects.push(currentProject);
+                }
+                
+                return submission;
+            } catch (error) {
+                console.error('Erreur lors du parsing:', error);
+                return null;
+            }
+        }
+
+        // Notification de synchronisation
+        function showSyncNotification(count) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #10b981, #059669);
+                color: white;
+                padding: 1rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                z-index: 1000;
+                max-width: 300px;
+                font-size: 0.9rem;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            notification.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 0.5rem;">🔄 Synchronisation automatique</div>
+                <div style="margin-bottom: 0.5rem;">${count} nouvelle(s) soumission(s) importée(s) !</div>
+                <div style="font-size: 0.8rem; opacity: 0.9;">Les données ont été fusionnées automatiquement</div>
+                <button onclick="this.parentElement.remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; margin-top: 0.5rem; cursor: pointer;">Fermer</button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-suppression après 5 secondes
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        function updateStatistics(rankings) {
+            const totalSubmissions = rankings.length;
+            const today = new Date().toDateString();
+            const todaySubmissions = rankings.filter(r => 
+                new Date(r.timestamp).toDateString() === today
+            ).length;
+            const avgProjects = totalSubmissions > 0 
+                ? (rankings.reduce((sum, r) => sum + r.ranking.length, 0) / totalSubmissions).toFixed(1)
+                : 0;
+            const latestSubmission = totalSubmissions > 0
+                ? new Date(Math.max(...rankings.map(r => new Date(r.timestamp)))).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+                : '-';
+
+            document.getElementById('totalSubmissions').textContent = totalSubmissions;
+            document.getElementById('todaySubmissions').textContent = todaySubmissions;
+            document.getElementById('avgProjects').textContent = avgProjects;
+            document.getElementById('latestSubmission').textContent = latestSubmission;
+        }
+
+        function displayRankings(rankings) {
+            const container = document.getElementById('rankingsList');
+            
+            if (rankings.length === 0) {
+                container.innerHTML = '<div class="no-data">Aucun classement enregistré</div>';
+                return;
+            }
+
+            // Tri par date (plus récent en premier)
+            const sortedRankings = rankings.sort((a, b) => 
+                new Date(b.timestamp) - new Date(a.timestamp)
+            );
+
+            container.innerHTML = sortedRankings.map((ranking, index) => `
+                <div class="ranking-item">
+                    <div class="ranking-header">
+                        <div>
+                            <div class="ranking-name">Soumission #${sortedRankings.length - index}</div>
+                            <div class="ranking-date">${new Date(ranking.timestamp).toLocaleString('fr-FR')}</div>
+                        </div>
+                        <div>
+                            <span class="anonymous-badge">🔒 Anonyme</span>
+                        </div>
+                    </div>
+                    <div class="ranking-projects">
+                        ${ranking.ranking.map(project => `
+                            <div class="project-rank-item">
+                                <span class="rank-badge">${project.rank}</span>
+                                ${project.name}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function analyzeProjectPriorities(rankings) {
+            if (rankings.length === 0) {
+                document.getElementById('projectAnalysis').innerHTML = 
+                    '<div class="no-data">Aucune donnée à analyser</div>';
+                return;
+            }
+
+            // Calcul des scores moyens pour chaque projet
+            const projectScores = {};
+            
+            rankings.forEach(ranking => {
+                ranking.ranking.forEach(project => {
+                    if (!projectScores[project.name]) {
+                        projectScores[project.name] = [];
+                    }
+                    projectScores[project.name].push(project.rank);
+                });
+            });
+
+            // Calcul des moyennes
+            const projectAverages = Object.entries(projectScores).map(([name, scores]) => ({
+                name,
+                averageScore: scores.reduce((a, b) => a + b, 0) / scores.length,
+                count: scores.length
+            })).sort((a, b) => a.averageScore - b.averageScore);
+
+            // Affichage du graphique
+            const maxScore = Math.max(...projectAverages.map(p => p.averageScore));
+            
+            document.getElementById('projectAnalysis').innerHTML = projectAverages.map(project => `
+                <div class="project-bar">
+                    <div class="project-name-bar">${project.name}</div>
+                    <div class="project-progress">
+                        <div class="project-fill" style="width: ${(project.averageScore / maxScore) * 100}%">
+                            ${project.averageScore.toFixed(1)}
+                        </div>
+                    </div>
+                    <div class="project-score">${project.count} votes</div>
+                </div>
+            `).join('');
+        }
+
+        function refreshData() {
+            loadAdminData();
+        }
+
+        function clearAllData() {
+            if (confirm('Êtes-vous sûr de vouloir effacer toutes les données ? Cette action est irréversible.')) {
+                localStorage.removeItem('projectRankings');
+                loadAdminData();
+                alert('Toutes les données ont été effacées');
+            }
+        }
+
+        // Actualisation automatique toutes les 30 secondes
+        setInterval(() => {
+            if (checkAuthentication()) {
+                loadAdminData();
+            }
+        }, 30000);
+    </script>
+    
+    <style>
+    /* Responsive Design pour l'admin */
+    @media (max-width: 768px) {
+        .admin-container {
+            margin: 1rem auto;
+            padding: 0 0.5rem;
+        }
+        
+        .admin-header {
+            padding: 1.5rem 1rem;
+            position: relative;
+        }
+        
+        .admin-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .logout-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8rem;
+        }
+        
+        .admin-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            padding: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+        }
+        
+        .project-stats {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .project-bar {
+            flex-direction: column;
+            align-items: stretch;
+            margin-bottom: 1rem;
+        }
+        
+        .project-name-bar {
+            min-width: auto;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .project-progress {
+            margin: 0 0 0.5rem 0;
+            height: 20px;
+        }
+        
+        .project-score {
+            min-width: auto;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+        
+        .rankings-table {
+            margin-bottom: 1rem;
+        }
+        
+        .table-header {
+            padding: 0.75rem;
+            font-size: 0.95rem;
+        }
+        
+        .ranking-item {
+            padding: 0.75rem;
+        }
+        
+        .ranking-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .ranking-projects {
+            grid-template-columns: 1fr;
+            gap: 0.375rem;
+        }
+        
+        .project-rank-item {
+            padding: 0.375rem;
+            font-size: 0.85rem;
+        }
+        
+        .rank-badge {
+            padding: 0.125rem 0.375rem;
+            font-size: 0.75rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .admin-container {
+            margin: 0.5rem auto;
+            padding: 0 0.25rem;
+        }
+        
+        .admin-header {
+            padding: 1rem 0.75rem;
+        }
+        
+        .admin-header h1 {
+            font-size: 1.3rem;
+        }
+        
+        .admin-header p {
+            font-size: 0.9rem;
+        }
+        
+        .logout-btn {
+            top: 0.5rem;
+            right: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .admin-actions {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.625rem;
+            font-size: 0.85rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        
+        .stat-card {
+            padding: 0.75rem;
+        }
+        
+        .stat-number {
+            font-size: 1.3rem;
+        }
+        
+        .project-stats {
+            padding: 0.75rem;
+        }
+        
+        .project-stats h3 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .project-progress {
+            height: 18px;
+        }
+        
+        .project-fill {
+            font-size: 0.7rem;
+            padding-right: 0.25rem;
+        }
+        
+        .table-header {
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .ranking-item {
+            padding: 0.5rem;
+        }
+        
+        .ranking-name {
+            font-size: 0.9rem;
+        }
+        
+        .ranking-date {
+            font-size: 0.8rem;
+        }
+        
+        .anonymous-badge {
+            padding: 0.125rem 0.5rem;
+            font-size: 0.7rem;
+        }
+    }
+
+    /* Modal responsive */
+    @media (max-width: 600px) {
+        div[style*="position: fixed"] {
+            padding: 1rem;
+        }
+        
+        div[style*="background: white"] {
+            margin: 1rem;
+            padding: 1.5rem;
+            max-width: none;
+            width: calc(100% - 2rem);
+            max-height: calc(100vh - 2rem);
+        }
+        
+        div[style*="background: white"] h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        div[style*="background: white"] h3 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        div[style*="display: flex"] {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        div[style*="display: flex"] .btn {
+            min-width: auto;
+        }
+    }
+    </style>
+</body>
+</html>

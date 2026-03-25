@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "Accès protégé"
+AuthUserFile /home/bichetk/www/.htpasswd
+Require valid-user

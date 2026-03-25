@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classement de Priorité des Projets</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <header class="header">
+        <div class="logo-container">
+            <img src="logo-2.png" alt="Logo" class="logo" id="mainLogo">
+        </div>
+        <h1>Classement de Priorité des Projets</h1>
+    </header>
+
+    <main class="main-container">
+        <section class="form-section">
+            <h2>Votre Classement de Priorité</h2>
+            <p class="instructions">
+                <strong>📱 Sur mobile :</strong> Utilisez les flèches ↑↓ pour déplacer les projets<br>
+                <strong>💻 Sur ordinateur :</strong> Glissez-déposez les projets pour les réorganiser<br>
+                <strong>📧 Soumission :</strong> Les classements seront envoyés par email automatiquement<br>
+                <strong>🎯 Objectif :</strong> Classez par ordre de priorité (1 = le plus important)
+            </p>
+
+            <form id="rankingForm">
+                <div class="projects-container" id="projectsContainer">
+                    <!-- Les projets seront ajoutés dynamiquement -->
+                </div>
+
+                <div class="form-info">
+                    <p class="anonymous-notice">
+                        <strong>🔒 Soumission anonyme</strong><br>
+                        Votre classement sera enregistré de manière confidentielle.
+                    </p>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Soumettre mon classement</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">Réinitialiser</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="results-section" id="resultsSection" style="display: none;">
+            <h2>Merci pour votre participation!</h2>
+            <p>Votre classement a été enregistré avec succès.</p>
+            <div id="submittedRanking"></div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 - Système de Classement de Projets</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

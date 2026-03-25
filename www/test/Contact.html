@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Élections municipales 2026 à Marigny-Saint-Marcel | Jean-Luc BICHET</title>
+    <meta name="description" content="Site officiel de Jean-Luc BICHET, candidat aux élections municipales 2026 à Marigny-Saint-Marcel. Programme, équipe, actualités et engagement local.">
+    <meta name="keywords" content="élection municipale, élections municipales 2026, Marigny Saint Marcel, Marigny Saint Marcel 2026, élection Marigny Saint Marcel, Jean-Luc BICHET, BICHET Jean-Luc, Jean-Luc BICHET 2026">
+    <meta name="author" content="Jean-Luc BICHET">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Jean-Luc BICHET – Élections municipales 2026 à Marigny-Saint-Marcel">
+    <meta property="og:description" content="Parcours et engagement de Jean-Luc BICHET pour Marigny-Saint-Marcel en 2026.">
+    <meta property="og:image" content="https://www.BICHET2026.fr/preview.jpg">
+    <meta property="og:url" content="https://www.BICHET2026.fr/">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="fond">
+
+<header class="topbar">
+    <nav class="nav">
+        <a href="index.html" class="logo">
+            <img src="logo.png" alt="Logo">
+        </a>
+        <div class="title-right">
+            <h2>Jean-Luc BICHET</h2>
+            <p>Élections Municipales de Marigny-Saint-Marcel 2026</p>
+        </div>
+        <div class="burger" id="burger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="menu" id="menu">
+            <li><a href="index.html"><img src="icons8-accueil-50.png" alt="Accueil" class="home-img"></a></li>
+            <li><a href="À propos.html">À propos</a></li>
+            <li><a href="Programme 2026.html">Programme 2026</a></li>
+            <li><a href="L'équipe.html">L’équipe</a></li>
+            <li><a href="Actualités.html">Actualités</a></li>
+            <li><a href="Contact.html" class="active">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main class="contact-page">
+    <h1 class="contact-title">CONTACTEZ-NOUS</h1>
+    <p class="contact-subtitle"><strong>UNE QUESTION ?</strong> Une suggestion ou l’envie de nous soutenir ? Envoyez-nous un message.</p>
+
+    <div class="contact-container">
+        <div class="form-wrapper">
+       <form id="contactForm" class="contact-form" action="send_mail.php" method="POST">
+            <label>Nom</label>
+            <input type="text" name="nom" placeholder="Votre nom" required>
+
+            <label>Prénom</label>
+            <input type="text" name="prenom" placeholder="Votre prénom" required>
+
+            <label>Adresse</label>
+            <input type="text" name="adresse" placeholder="Votre adresse complète" required>
+
+            <label>Téléphone</label>
+            <input type="text" name="telephone" placeholder="Votre numéro de téléphone" required>
+
+            <label>E-mail</label>
+            <input type="email" name="email" placeholder="Votre adresse e-mail" required>
+
+            <label>Sujet</label>
+            <input type="text" name="sujet" placeholder="Sujet de votre message" required>
+
+            <label>Message</label>
+            <textarea name="message" placeholder="Votre message…" required></textarea>
+
+            <label class="checkbox-container">
+                <input type="checkbox" name="acceptation" required>
+                <span>J’accepte que Jean-Luc BICHET utilise les informations collectées dans ce formulaire dans le cadre de ma demande de contact.</span>
+            </label>
+
+           <button type="submit">Envoyer</button>
+        </form>
+
+        <div id="formMessage" class="form-msg"></div>
+</div>
+        <div class="contact-info">
+            <h2>Mes coordonnées</h2>
+            <p><b>📞 Téléphone :</b> <a href="tel:+33664545548">06 64 54 55 48</a></p>
+            <p><b>✉️ Email :</b> <a href="mailto:contact@bichet2026.fr">contact@bichet2026.fr</a></p>
+
+            <h2>Réseaux sociaux</h2>
+            <p><a href="https://www.facebook.com/profile.php?id=61587280468175" target="_blank"><i class="fab fa-facebook"></i> Facebook</a></p>
+            <p><a href="https://www.instagram.com/tonprofil" target="_blank"><i class="fab fa-instagram"></i> Instagram</a></p>
+            <p><a href="https://twitter.com/tonprofil" target="_blank"><i class="fab fa-x-twitter"></i> Twitter</a></p>
+        </div>
+    </div>
+</main>
+
+<footer class="bottombar">
+    <div class="footer-content">
+        <div class="footer-left">© 2026 – Jean-Luc BICHET - Élections Municipales de Marigny-Saint-Marcel</div>
+        <div class="footer-center">📞 <a href="tel:+33664545548">06 64 54 55 48</a> ✉️ <a href="mailto:contact@bichet2026.fr">contact@bichet2026.fr</a></div>
+        <div class="footer-right">
+            <a href="https://www.facebook.com/profile.php?id=61587280468175" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.instagram.com/tonprofil" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://twitter.com/tonprofil" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        </div>
+    </div>
+</footer>
+
+<script>
+document.getElementById("contactForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const data = new FormData(form);
+    fetch(form.action, {
+        method: "POST",
+        body: data
+    })
+    .then(response => response.json())
+    .then(result => {
+        const msgDiv = document.getElementById("formMessage");
+        msgDiv.textContent = result.message;
+        msgDiv.style.color = result.success ? "green" : "red";
+        if (result.success) form.reset();
+    })
+    .catch(() => {
+        const msgDiv = document.getElementById("formMessage");
+        msgDiv.textContent = "Erreur serveur.";
+        msgDiv.style.color = "red";
+    });
+});
+
+document.getElementById("burger").addEventListener("click", () => {
+    document.getElementById("menu").classList.toggle("menu-open");
+});
+</script>
+<script src="script.js"></script>
+</body>
+</html>
